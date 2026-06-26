@@ -739,7 +739,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.4</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.5</span></div>
   </div>
 </div>
 
@@ -764,7 +764,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.4</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.5</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -799,7 +799,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v4.4</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v4.5</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1001,24 +1001,24 @@ tr:hover td{background:var(--gray-50)}
             <div class="g2">
               <div class="field">
                 <label class="lbl">📷 Foto IMEI Galileosky <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-imei_galileosky" for="foto_imei_galileosky">
-                  <input type="file" id="foto_imei_galileosky" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-imei_galileosky')"/>
+                <div class="photo-wrap" id="pw-imei_galileosky" onclick="openCamera(\'foto_imei_galileosky\',\'pw-imei_galileosky\')">
+                  <input type="file" id="foto_imei_galileosky" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-imei_galileosky')"/>
                   <div class="photo-placeholder" id="ph-imei_galileosky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-imei_galileosky" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-imei_galileosky" style="display:none" onclick="clearPhoto(event,'foto_imei_galileosky','pw-imei_galileosky','ph-imei_galileosky','prev-imei_galileosky','clr-imei_galileosky')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-imei_galileosky" style="display:none" onclick="analizarFoto('galileosky','imei_galileosky')">
                   🔍 <span class="analyze-lbl">Extraer IMEI</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
               </div>
               <div class="field">
                 <label class="lbl">📷 Foto Chip/SIM Galileosky <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-chip_galileosky" for="foto_chip_galileosky">
-                  <input type="file" id="foto_chip_galileosky" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-chip_galileosky')"/>
+                <div class="photo-wrap" id="pw-chip_galileosky" onclick="openCamera(\'foto_chip_galileosky\',\'pw-chip_galileosky\')">
+                  <input type="file" id="foto_chip_galileosky" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-chip_galileosky')"/>
                   <div class="photo-placeholder" id="ph-chip_galileosky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-chip_galileosky" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-chip_galileosky" style="display:none" onclick="clearPhoto(event,'foto_chip_galileosky','pw-chip_galileosky','ph-chip_galileosky','prev-chip_galileosky','clr-chip_galileosky')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-chip_galileosky" style="display:none" onclick="analizarFoto('chip_sim','chip_galileosky')">
                   🔍 <span class="analyze-lbl">Extraer ICCID</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
@@ -1035,24 +1035,24 @@ tr:hover td{background:var(--gray-50)}
             <div class="g2">
               <div class="field">
                 <label class="lbl">📷 Foto IMEI MDVR <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-imei_mdvr" for="foto_imei_mdvr">
-                  <input type="file" id="foto_imei_mdvr" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-imei_mdvr')"/>
+                <div class="photo-wrap" id="pw-imei_mdvr" onclick="openCamera(\'foto_imei_mdvr\',\'pw-imei_mdvr\')">
+                  <input type="file" id="foto_imei_mdvr" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-imei_mdvr')"/>
                   <div class="photo-placeholder" id="ph-imei_mdvr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-imei_mdvr" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-imei_mdvr" style="display:none" onclick="clearPhoto(event,'foto_imei_mdvr','pw-imei_mdvr','ph-imei_mdvr','prev-imei_mdvr','clr-imei_mdvr')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-imei_mdvr" style="display:none" onclick="analizarFoto('mdvr','imei_mdvr')">
                   🔍 <span class="analyze-lbl">Extraer IMEI</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
               </div>
               <div class="field">
                 <label class="lbl">📷 Foto Chip/SIM MDVR <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-chip_mdvr" for="foto_chip_mdvr">
-                  <input type="file" id="foto_chip_mdvr" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-chip_mdvr')"/>
+                <div class="photo-wrap" id="pw-chip_mdvr" onclick="openCamera(\'foto_chip_mdvr\',\'pw-chip_mdvr\')">
+                  <input type="file" id="foto_chip_mdvr" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-chip_mdvr')"/>
                   <div class="photo-placeholder" id="ph-chip_mdvr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-chip_mdvr" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-chip_mdvr" style="display:none" onclick="clearPhoto(event,'foto_chip_mdvr','pw-chip_mdvr','ph-chip_mdvr','prev-chip_mdvr','clr-chip_mdvr')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-chip_mdvr" style="display:none" onclick="analizarFoto('chip_sim','chip_mdvr')">
                   🔍 <span class="analyze-lbl">Extraer ICCID</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
@@ -1069,24 +1069,24 @@ tr:hover td{background:var(--gray-50)}
             <div class="g2">
               <div class="field">
                 <label class="lbl">📷 Foto IMEI Iridium <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-imei_iridium" for="foto_imei_iridium">
-                  <input type="file" id="foto_imei_iridium" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-imei_iridium')"/>
+                <div class="photo-wrap" id="pw-imei_iridium" onclick="openCamera(\'foto_imei_iridium\',\'pw-imei_iridium\')">
+                  <input type="file" id="foto_imei_iridium" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-imei_iridium')"/>
                   <div class="photo-placeholder" id="ph-imei_iridium"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-imei_iridium" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-imei_iridium" style="display:none" onclick="clearPhoto(event,'foto_imei_iridium','pw-imei_iridium','ph-imei_iridium','prev-imei_iridium','clr-imei_iridium')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-imei_iridium" style="display:none" onclick="analizarFoto('iridium','imei_iridium')">
                   🔍 <span class="analyze-lbl">Extraer IMEI</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
               </div>
               <div class="field">
                 <label class="lbl">📷 Foto Chip/SIM Tablet MDT <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-chip_tablet" for="foto_chip_tablet">
-                  <input type="file" id="foto_chip_tablet" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-chip_tablet')"/>
+                <div class="photo-wrap" id="pw-chip_tablet" onclick="openCamera(\'foto_chip_tablet\',\'pw-chip_tablet\')">
+                  <input type="file" id="foto_chip_tablet" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-chip_tablet')"/>
                   <div class="photo-placeholder" id="ph-chip_tablet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-chip_tablet" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-chip_tablet" style="display:none" onclick="clearPhoto(event,'foto_chip_tablet','pw-chip_tablet','ph-chip_tablet','prev-chip_tablet','clr-chip_tablet')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-chip_tablet" style="display:none" onclick="analizarFoto('chip_sim','chip_tablet')">
                   🔍 <span class="analyze-lbl">Extraer ICCID</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
@@ -1103,24 +1103,24 @@ tr:hover td{background:var(--gray-50)}
             <div class="g2">
               <div class="field">
                 <label class="lbl">📷 Foto etiqueta Sensor DU-BLE <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-mac_sensor_angulo" for="foto_mac_sensor_angulo">
-                  <input type="file" id="foto_mac_sensor_angulo" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-mac_sensor_angulo')"/>
+                <div class="photo-wrap" id="pw-mac_sensor_angulo" onclick="openCamera(\'foto_mac_sensor_angulo\',\'pw-mac_sensor_angulo\')">
+                  <input type="file" id="foto_mac_sensor_angulo" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-mac_sensor_angulo')"/>
                   <div class="photo-placeholder" id="ph-mac_sensor_angulo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-mac_sensor_angulo" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-mac_sensor_angulo" style="display:none" onclick="clearPhoto(event,'foto_mac_sensor_angulo','pw-mac_sensor_angulo','ph-mac_sensor_angulo','prev-mac_sensor_angulo','clr-mac_sensor_angulo')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-mac_sensor_angulo" style="display:none" onclick="analizarFoto('sensor','mac_sensor_angulo')">
                   🔍 <span class="analyze-lbl">Extraer MAC</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
               </div>
               <div class="field">
                 <label class="lbl">📷 Foto placa / vehículo <span class="hint">(opcional)</span></label>
-                <label class="photo-wrap" id="pw-foto_vehiculo_pic" for="foto_foto_vehiculo_pic">
-                  <input type="file" id="foto_foto_vehiculo_pic" accept="image/*" class="photo-input-hidden" onchange="previewPhoto(this,'pw-foto_vehiculo_pic')"/>
+                <div class="photo-wrap" id="pw-foto_vehiculo_pic" onclick="openCamera(\'foto_foto_vehiculo_pic\',\'pw-foto_vehiculo_pic\')">
+                  <input type="file" id="foto_foto_vehiculo_pic" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-foto_vehiculo_pic')"/>
                   <div class="photo-placeholder" id="ph-foto_vehiculo_pic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
                   <img id="prev-foto_vehiculo_pic" class="photo-preview" style="display:none"/>
                   <button type="button" class="photo-clear" id="clr-foto_vehiculo_pic" style="display:none" onclick="clearPhoto(event,'foto_foto_vehiculo_pic','pw-foto_vehiculo_pic','ph-foto_vehiculo_pic','prev-foto_vehiculo_pic','clr-foto_vehiculo_pic')">✕</button>
-                </label>
+                </div>
                 <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-foto_vehiculo_pic" style="display:none" onclick="analizarFoto('vehiculo','foto_vehiculo_pic')">
                   🔍 <span class="analyze-lbl">Extraer placa</span><span class="analyze-spin" style="display:none">⏳</span>
                 </button>
@@ -1302,6 +1302,35 @@ tr:hover td{background:var(--gray-50)}
       "></div>
     </div>
     <div id="scanner-status">Apunte la cámara al código de barras o QR</div>
+  </div>
+</div>
+
+<!-- ═══ CAMERA MODAL — captura foto sin salir de la página ═══ -->
+<div id="camera-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:#000;flex-direction:column">
+  <div style="position:relative;flex:1;overflow:hidden">
+    <video id="camera-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover"></video>
+    <!-- Grid overlay para encuadre -->
+    <div style="position:absolute;inset:0;pointer-events:none">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:340px;aspect-ratio:4/3;border:2px solid rgba(255,255,255,.5);border-radius:8px;box-shadow:0 0 0 2000px rgba(0,0,0,.35)">
+        <div style="position:absolute;top:-2px;left:-2px;width:24px;height:24px;border-top:3px solid #009BDB;border-left:3px solid #009BDB;border-radius:4px 0 0 0"></div>
+        <div style="position:absolute;top:-2px;right:-2px;width:24px;height:24px;border-top:3px solid #009BDB;border-right:3px solid #009BDB;border-radius:0 4px 0 0"></div>
+        <div style="position:absolute;bottom:-2px;left:-2px;width:24px;height:24px;border-bottom:3px solid #009BDB;border-left:3px solid #009BDB;border-radius:0 0 0 4px"></div>
+        <div style="position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;border-bottom:3px solid #009BDB;border-right:3px solid #009BDB;border-radius:0 0 4px 0"></div>
+      </div>
+    </div>
+    <!-- Label del campo -->
+    <div style="position:absolute;top:16px;left:0;right:0;text-align:center">
+      <span id="camera-label" style="background:rgba(0,0,0,.6);color:white;font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px"></span>
+    </div>
+    <!-- Botón cerrar -->
+    <button onclick="closeCamera()" style="position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+  <!-- Controles -->
+  <div style="background:#111;padding:20px;display:flex;align-items:center;justify-content:center;gap:20px">
+    <button id="camera-torch-btn" onclick="toggleCameraTorch()" style="display:none;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:22px;cursor:pointer">🔦</button>
+    <!-- Botón disparador -->
+    <button onclick="capturePhoto()" style="width:72px;height:72px;border-radius:50%;background:white;border:4px solid #009BDB;cursor:pointer;box-shadow:0 0 0 4px rgba(0,155,219,.3)"></button>
+    <div style="width:48px"></div>
   </div>
 </div>
 
@@ -2284,7 +2313,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v4.4
+   SIDEBAR MOBILE — v4.5
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -2305,8 +2334,150 @@ function closeSidebar() {
   document.getElementById('sidebar-overlay')?.classList.remove('open');
 }
 
+/* ══════════════════════════════════════
+   CÁMARA INTERNA — no sale de la página
+   ══════════════════════════════════════ */
+let _camStream   = null;
+let _camTrack    = null;
+let _camTarget   = null; // inputId
+let _camWrap     = null; // wrapId
+let _camTorch    = false;
+
+const CAM_LABELS = {
+  foto_imei_galileosky:   'IMEI Galileosky',
+  foto_chip_galileosky:   'Chip/SIM Galileosky',
+  foto_imei_mdvr:         'IMEI MDVR',
+  foto_chip_mdvr:         'Chip/SIM MDVR',
+  foto_imei_iridium:      'IMEI Iridium',
+  foto_chip_tablet:       'Chip/SIM Tablet MDT',
+  foto_mac_sensor_angulo: 'MAC Sensor DU-BLE',
+  foto_foto_vehiculo_pic: 'Placa / Vehículo',
+};
+
+async function openCamera(inputId, wrapId) {
+  _camTarget = inputId;
+  _camWrap   = wrapId;
+
+  const modal = document.getElementById('camera-modal');
+  const video = document.getElementById('camera-video');
+  const lbl   = document.getElementById('camera-label');
+
+  if (lbl) lbl.textContent = '📷 ' + (CAM_LABELS[inputId] || 'Foto');
+
+  // Si el navegador no soporta getUserMedia, fallback a input file
+  if (!navigator.mediaDevices?.getUserMedia) {
+    document.getElementById(inputId)?.click();
+    return;
+  }
+
+  modal.style.display = 'flex';
+  _camTorch = false;
+
+  try {
+    _camStream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: 'environment' },
+        width:  { ideal: 1920 },
+        height: { ideal: 1080 },
+      },
+      audio: false,
+    });
+
+    _camTrack = _camStream.getVideoTracks()[0];
+    video.srcObject = _camStream;
+    await video.play();
+
+    // Autoenfoque continuo
+    try {
+      const caps = _camTrack.getCapabilities?.() || {};
+      const c = {};
+      if (caps.focusMode?.includes('continuous')) c.focusMode = 'continuous';
+      if (Object.keys(c).length) _camTrack.applyConstraints({ advanced: [c] }).catch(()=>{});
+      // Mostrar linterna si disponible
+      const torchBtn = document.getElementById('camera-torch-btn');
+      if (torchBtn) torchBtn.style.display = caps.torch ? 'flex' : 'none';
+    } catch(e) {}
+
+  } catch(err) {
+    console.warn('Camera API failed, fallback to file input:', err.name);
+    modal.style.display = 'none';
+    // Fallback: abrir selector de archivos normal
+    document.getElementById(inputId)?.click();
+  }
+}
+
+function capturePhoto() {
+  const video  = document.getElementById('camera-video');
+  if (!video || !_camStream) return;
+
+  const MAX_DIM = 1024;
+  const QUALITY = 0.82;
+
+  let w = video.videoWidth;
+  let h = video.videoHeight;
+  if (w > MAX_DIM || h > MAX_DIM) {
+    const ratio = Math.min(MAX_DIM/w, MAX_DIM/h);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = w;
+  canvas.height = h;
+  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+  const compressed = canvas.toDataURL('image/jpeg', QUALITY);
+  canvas.width = 0; canvas.height = 0; // liberar memoria
+
+  // Guardar en el input virtual
+  const input = document.getElementById(_camTarget);
+  if (input) input._compressed = compressed;
+
+  // Mostrar preview
+  const key  = _camWrap.replace('pw-', '');
+  const prev = document.getElementById('prev-' + key);
+  const ph   = document.getElementById('ph-'   + key);
+  const clr  = document.getElementById('clr-'  + key);
+  const wrap = document.getElementById(_camWrap);
+  const btn  = document.getElementById('btn-analyze-' + key);
+
+  if (prev)  { prev.src = compressed; prev.style.display = 'block'; }
+  if (ph)    ph.style.display  = 'none';
+  if (clr)   clr.style.display = 'flex';
+  if (wrap)  wrap.style.borderColor = 'var(--green)';
+  if (btn)   btn.style.display = 'flex';
+
+  closeCamera();
+  showToast('✓ Foto capturada', 'ok-t');
+}
+
+async function toggleCameraTorch() {
+  if (!_camTrack) return;
+  try {
+    _camTorch = !_camTorch;
+    await _camTrack.applyConstraints({ advanced: [{ torch: _camTorch }] });
+    const btn = document.getElementById('camera-torch-btn');
+    if (btn) btn.style.background = _camTorch ? 'rgba(255,220,0,.4)' : 'rgba(255,255,255,.15)';
+  } catch(e) {}
+}
+
+function closeCamera() {
+  _camTorch = false;
+  if (_camTrack) {
+    try { _camTrack.applyConstraints({ advanced: [{ torch: false }] }).catch(()=>{}); } catch(e) {}
+  }
+  _camStream?.getTracks().forEach(t => t.stop());
+  _camStream = null;
+  _camTrack  = null;
+  const video = document.getElementById('camera-video');
+  if (video) { video.srcObject = null; }
+  document.getElementById('camera-modal').style.display = 'none';
+}
+
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeSidebar();
+  if (e.key === 'Escape') {
+    closeCamera();
+    closeSidebar();
+  }
 });
 </script>
 <!-- html2canvas for image export -->
