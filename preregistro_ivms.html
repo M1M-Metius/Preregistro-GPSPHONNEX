@@ -727,7 +727,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.1</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.2</span></div>
   </div>
 </div>
 
@@ -752,7 +752,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.1</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.2</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -1688,59 +1688,86 @@ function genCodigo() {
 
 /* ══════════════════════════════════════
    PHOTO CAPTURE HELPERS
-   Canvas compression fixes low memory error on mobile
+   Canvas compression — usa createImageBitmap (más eficiente en memoria)
    ══════════════════════════════════════ */
 function triggerPhoto(inputId) {
   document.getElementById(inputId)?.click();
 }
 
-function previewPhoto(input, wrapId) {
+async function previewPhoto(input, wrapId) {
   if (!input.files?.[0]) return;
-  const file = input.files[0];
-  const key  = wrapId.replace('pw-', '');
+  const file  = input.files[0];
+  const key   = wrapId.replace('pw-', '');
   const prevEl = document.getElementById('prev-' + key);
   const phEl   = document.getElementById('ph-'   + key);
   const clrEl  = document.getElementById('clr-'  + key);
   const wrapEl = document.getElementById(wrapId);
   const btnAn  = document.getElementById('btn-analyze-' + key);
 
-  // Compress to max 1280px — preserves OCR quality, reduces memory ~80%
-  const MAX_DIM = 1280;
-  const QUALITY = 0.82;
+  const MAX_DIM = 1024; // reducido a 1024 para menor uso de memoria
+  const QUALITY = 0.80;
 
-  const img = new Image();
-  const url = URL.createObjectURL(file);
+  try {
+    let bitmap;
 
-  img.onload = () => {
-    URL.revokeObjectURL(url);
-    let w = img.naturalWidth;
-    let h = img.naturalHeight;
+    if (typeof createImageBitmap !== 'undefined') {
+      // createImageBitmap: decodifica directamente sin pasar por DOM
+      // Mucho más eficiente en memoria que new Image()
+      bitmap = await createImageBitmap(file, {
+        resizeWidth:   MAX_DIM,
+        resizeHeight:  MAX_DIM,
+        resizeQuality: 'medium',
+      });
+    } else {
+      // Fallback para navegadores sin createImageBitmap
+      const url = URL.createObjectURL(file);
+      bitmap = await new Promise((res, rej) => {
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); res(img); };
+        img.onerror = () => { URL.revokeObjectURL(url); rej(); };
+        img.src = url;
+      });
+    }
+
+    // Calcular dimensiones finales manteniendo proporción
+    let w = bitmap.width  || bitmap.naturalWidth;
+    let h = bitmap.height || bitmap.naturalHeight;
     if (w > MAX_DIM || h > MAX_DIM) {
       const ratio = Math.min(MAX_DIM / w, MAX_DIM / h);
       w = Math.round(w * ratio);
       h = Math.round(h * ratio);
     }
+
+    // Dibujar en canvas y comprimir
     const canvas = document.createElement('canvas');
     canvas.width  = w;
     canvas.height = h;
-    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0, w, h);
+
+    // Liberar bitmap de memoria inmediatamente
+    if (bitmap.close) bitmap.close();
+
     const compressed = canvas.toDataURL('image/jpeg', QUALITY);
-    // Store compressed data for upload
+
+    // Guardar comprimida para upload
     input._compressed = compressed;
-    // Show preview
+
+    // Mostrar preview
     if (prevEl) { prevEl.src = compressed; prevEl.style.display = 'block'; }
     if (phEl)   phEl.style.display  = 'none';
     if (clrEl)  clrEl.style.display = 'flex';
     if (wrapEl) wrapEl.style.borderColor = 'var(--green)';
     if (btnAn)  btnAn.style.display = 'flex';
-  };
 
-  img.onerror = () => {
-    URL.revokeObjectURL(url);
-    showToast('No se pudo cargar la imagen', 'err-t');
-  };
+    // Liberar canvas de memoria
+    canvas.width = 0;
+    canvas.height = 0;
 
-  img.src = url;
+  } catch(e) {
+    console.error('previewPhoto error:', e);
+    showToast('Error al procesar la imagen. Intente de nuevo.', 'err-t');
+  }
 }
 
 function clearPhoto(e, inputId, wrapId, phId, prevId, clrId) {
@@ -2241,7 +2268,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v4.1
+   SIDEBAR MOBILE — v4.2
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
