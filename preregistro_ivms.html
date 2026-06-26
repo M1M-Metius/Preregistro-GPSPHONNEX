@@ -2517,6 +2517,7 @@ async function onGallerySelect(input) {
   }
   input.value = '';
 }
+async function toggleTorch() {
   if (!_camTrack) return;
   try {
     _camTorch = !_camTorch;
