@@ -1,0 +1,100 @@
+====================================================
+  GPSP — Pre-Registro IVMS
+  Versión: V3.0 | 2026-06-22
+  GPSPhonnex / Varinfe Corp
+====================================================
+
+ARCHIVOS INCLUIDOS
+------------------
+  config.php              ← ⚠️  EDITAR ESTE PRIMERO (credenciales BD)
+  preregistro_ivms.html   ← Aplicación principal
+  auth_login.php          ← Endpoint login
+  save_preregistro.php    ← Endpoint guardar registro
+  get_registros.php       ← Endpoint listar / editar / archivar
+  preregistro_ivms.sql    ← Crear tabla preregistro_ivms (NUEVO)
+  alter_v3.sql            ← Si ya tienes la tabla de una versión anterior
+
+IMÁGENES ADAS (copiar del servidor anterior)
+--------------------------------------------
+  Fig.3.jpg
+  Fig.4.jpg
+  Fig.5.jpg
+  Fig.6.jpg
+
+====================================================
+  PASO 1 — Configurar credenciales
+====================================================
+Edita config.php y cambia:
+
+  define('DB_HOST', 'localhost');
+  define('DB_PORT', '3306');
+  define('DB_NAME', 'gps');         ← nombre de tu BD
+  define('DB_USER', 'tu_usuario');  ← usuario MySQL
+  define('DB_PASS', 'tu_password'); ← contraseña MySQL
+
+====================================================
+  PASO 2 — Base de datos
+====================================================
+Si es instalación NUEVA (tabla no existe):
+  Ejecutar preregistro_ivms.sql
+
+Si ya tienes la tabla de versión anterior:
+  Ejecutar alter_v3.sql
+  (agrega columnas pais_iso y updated_at si no existen)
+
+====================================================
+  PASO 3 — Subir archivos al servidor
+====================================================
+Copiar todos los archivos al directorio web:
+  /var/www/html/tu-carpeta/
+
+Copiar también las 4 imágenes ADAS:
+  Fig.3.jpg, Fig.4.jpg, Fig.5.jpg, Fig.6.jpg
+
+Permisos correctos:
+  chown www-data:www-data /var/www/html/tu-carpeta/*
+  chmod 644 /var/www/html/tu-carpeta/*.php
+  chmod 644 /var/www/html/tu-carpeta/*.html
+  chmod 644 /var/www/html/tu-carpeta/*.jpg
+
+====================================================
+  PASO 4 — Crear usuarios en BD (si no existen)
+====================================================
+Ejecutar en MySQL (ajusta contraseñas antes):
+
+  INSERT INTO usuario (no_nombre, n_pass, id_usua, id_emp, us_tipo, fe_crea, id_est_usu, failed_attempts)
+  VALUES
+    ('Pre-Registro Chile',  MD5('Chile2026!'),  'chilepreivms',  '5857', 3, CURDATE(), 'activo', 0),
+    ('Pre-Registro Perú',   MD5('Peru2026!'),   'perupreivms',   '5802', 3, CURDATE(), 'activo', 0),
+    ('Pre-Registro Brasil', MD5('Brasil2026!'), 'brasilpreivms', '5876', 3, CURDATE(), 'activo', 0);
+
+  Nota: id_emp 5857=Chile, 5802=Perú, 5876=Brasil (ajusta si son diferentes)
+  Nota: El usuario admin debe tener us_tipo = 1 en la tabla usuario
+
+====================================================
+  PASO 5 — HTTPS (requerido para escáner de cámara)
+====================================================
+El escáner de código de barras requiere HTTPS.
+Con tu dominio con HTTPS ya activo, funciona directamente.
+
+URL de acceso:
+  https://tudominio.com/tu-carpeta/preregistro_ivms.html
+
+====================================================
+  USUARIOS Y ROLES
+====================================================
+  us_tipo = 1 o 2 → admin    (ve todos los países, puede archivar)
+  us_tipo = 3     → tecnico  (ve solo su país según id_usua)
+  us_tipo = 4     → cliente  (lectura)
+
+  Mapa usuario → país (en config.php):
+    chilepreivms  → CL (Chile)
+    perupreivms   → PE (Perú)
+    brasilpreivms → BR (Brasil)
+
+====================================================
+  BASE DE DATOS — misma BD 'gps'
+====================================================
+Solo se agrega UNA tabla nueva: preregistro_ivms
+No se modifica ninguna tabla existente.
+La tabla usuario se usa en modo lectura para el login.
