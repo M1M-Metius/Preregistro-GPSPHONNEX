@@ -739,7 +739,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.6</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.7</span></div>
   </div>
 </div>
 
@@ -764,7 +764,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.6</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.7</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -799,7 +799,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v4.6</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v4.7</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1305,35 +1305,42 @@ tr:hover td{background:var(--gray-50)}
   </div>
 </div>
 
-<!-- ═══ CAMERA MODAL — captura foto sin salir de la página ═══ -->
-<div id="camera-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:#000;flex-direction:column">
-  <div style="position:relative;flex:1;overflow:hidden">
-    <video id="camera-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover"></video>
-    <!-- Grid overlay para encuadre -->
-    <div style="position:absolute;inset:0;pointer-events:none">
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:340px;aspect-ratio:4/3;border:2px solid rgba(255,255,255,.5);border-radius:8px;box-shadow:0 0 0 2000px rgba(0,0,0,.35)">
+<!-- ═══ CAMERA MODAL ═══ -->
+<div id="camera-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;background:#000;flex-direction:column;flex:1">
+  <div style="position:relative;flex:1;min-height:0;overflow:hidden">
+    <video id="camera-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:block"></video>
+    <!-- Grid overlay -->
+    <div style="position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center">
+      <div style="width:80%;max-width:340px;aspect-ratio:4/3;border:2px solid rgba(255,255,255,.5);border-radius:8px;box-shadow:0 0 0 2000px rgba(0,0,0,.35);position:relative">
         <div style="position:absolute;top:-2px;left:-2px;width:24px;height:24px;border-top:3px solid #009BDB;border-left:3px solid #009BDB;border-radius:4px 0 0 0"></div>
         <div style="position:absolute;top:-2px;right:-2px;width:24px;height:24px;border-top:3px solid #009BDB;border-right:3px solid #009BDB;border-radius:0 4px 0 0"></div>
         <div style="position:absolute;bottom:-2px;left:-2px;width:24px;height:24px;border-bottom:3px solid #009BDB;border-left:3px solid #009BDB;border-radius:0 0 0 4px"></div>
         <div style="position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;border-bottom:3px solid #009BDB;border-right:3px solid #009BDB;border-radius:0 0 4px 0"></div>
       </div>
     </div>
-    <!-- Label del campo -->
-    <div style="position:absolute;top:16px;left:0;right:0;text-align:center">
-      <span id="camera-label" style="background:rgba(0,0,0,.6);color:white;font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px"></span>
+    <!-- Label -->
+    <div style="position:absolute;top:16px;left:0;right:0;text-align:center;pointer-events:none">
+      <span id="camera-label" style="background:rgba(0,0,0,.65);color:white;font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px"></span>
     </div>
-    <!-- Botón cerrar -->
-    <button onclick="closeCamera()" style="position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+    <!-- Cerrar -->
+    <button onclick="closeCamera()" style="position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.3);color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2">✕</button>
   </div>
   <!-- Controles -->
-  <div style="background:#111;padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:12px">
-    <div id="camera-status" style="color:rgba(255,255,255,.7);font-size:12px;text-align:center">Iniciando cámara...</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:20px;width:100%">
-      <button id="camera-torch-btn" onclick="toggleCameraTorch()" style="display:none;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:22px;cursor:pointer">🔦</button>
-      <!-- Botón disparador -->
-      <button onclick="capturePhoto()" style="width:72px;height:72px;border-radius:50%;background:white;border:4px solid #009BDB;cursor:pointer;box-shadow:0 0 0 4px rgba(0,155,219,.3)"></button>
-      <div style="width:48px"></div>
+  <div style="background:#111;padding:16px 20px 24px;flex-shrink:0">
+    <div id="camera-status" style="color:rgba(255,255,255,.6);font-size:12px;text-align:center;margin-bottom:14px">Iniciando cámara...</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:24px">
+      <!-- Galería (fallback) -->
+      <label id="camera-gallery-btn" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Elegir de galería">
+        🖼️
+        <input type="file" id="camera-gallery-input" accept="image/*" style="display:none" onchange="onGallerySelect(this)"/>
+      </label>
+      <!-- Disparador -->
+      <button onclick="capturePhoto()" style="width:72px;height:72px;border-radius:50%;background:white;border:4px solid #009BDB;cursor:pointer;box-shadow:0 0 0 6px rgba(0,155,219,.25);flex-shrink:0"></button>
+      <!-- Linterna -->
+      <button id="camera-torch-btn" onclick="toggleCameraTorch()" style="display:none;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:20px;cursor:pointer">🔦</button>
+      <div id="camera-torch-placeholder" style="width:48px"></div>
     </div>
+    <div style="text-align:center;margin-top:10px;color:rgba(255,255,255,.4);font-size:11px">● toca la pantalla para enfocar &nbsp;·&nbsp; 🖼️ para usar galería</div>
   </div>
 </div>
 
@@ -2316,7 +2323,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v4.6
+   SIDEBAR MOBILE — v4.7
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -2400,7 +2407,11 @@ async function openCamera(inputId, wrapId) {
       if (caps.focusMode?.includes('continuous')) c.focusMode = 'continuous';
       if (Object.keys(c).length) _camTrack.applyConstraints({ advanced: [c] }).catch(()=>{});
       const torchBtn = document.getElementById('camera-torch-btn');
-      if (torchBtn) torchBtn.style.display = caps.torch ? 'flex' : 'none';
+      const torchPh  = document.getElementById('camera-torch-placeholder');
+      if (torchBtn) {
+        torchBtn.style.display = caps.torch ? 'flex' : 'none';
+        if (torchPh) torchPh.style.display = caps.torch ? 'none' : 'block';
+      }
     } catch(e) {}
 
   } catch(err) {
@@ -2461,7 +2472,25 @@ function capturePhoto() {
   showToast('✓ Foto capturada', 'ok-t');
 }
 
-async function toggleCameraTorch() {
+// Galería — alternativa si la cámara no abre
+async function onGallerySelect(input) {
+  if (!input.files?.[0] || !_camTarget) return;
+  closeCamera();
+  // Reusar previewPhoto con el archivo seleccionado
+  const fakeInput = document.getElementById(_camTarget) || { _compressed: null };
+  await previewPhoto({ files: input.files, _compressed: null, addEventListener: ()=>{} }, _camWrap);
+  // Copiar el archivo al input real
+  const realInput = document.getElementById(_camTarget);
+  if (realInput) {
+    // Crear DataTransfer para asignar el file al input real
+    try {
+      const dt = new DataTransfer();
+      dt.items.add(input.files[0]);
+      realInput.files = dt.files;
+    } catch(e) {}
+  }
+  input.value = '';
+}
   if (!_camTrack) return;
   try {
     _camTorch = !_camTorch;
