@@ -745,7 +745,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v4.9</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.0</span></div>
   </div>
 </div>
 
@@ -770,7 +770,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v4.9</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.0</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +805,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v4.9</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.0</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1346,7 +1346,7 @@ tr:hover td{background:var(--gray-50)}
       <button id="camera-torch-btn" onclick="toggleCameraTorch()" style="display:none;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:20px;cursor:pointer">🔦</button>
       <div id="camera-torch-placeholder" style="width:48px"></div>
     </div>
-    <div style="text-align:center;margin-top:10px;color:rgba(255,255,255,.4);font-size:11px">● toca la pantalla para enfocar &nbsp;·&nbsp; botón = espera 2s y captura</div>
+    <div style="text-align:center;margin-top:10px;color:rgba(255,255,255,.4);font-size:11px">el botón se activa cuando la imagen esté nítida</div>
   </div>
 </div>
 
@@ -2329,7 +2329,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v4.9
+   SIDEBAR MOBILE — v5.0
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -2404,23 +2404,11 @@ async function openCamera(inputId, wrapId) {
     _camTrack = _camStream.getVideoTracks()[0];
     video.srcObject = _camStream;
     await video.play();
-    if (statusEl) statusEl.textContent = 'Encuadre la etiqueta y presione el botón';
+    if (statusEl) statusEl.textContent = 'Enfocando...';
 
-    // Enfoque: Chrome Android ignora focusMode API pero responde al zoom
-    // Aplicar zoom ligero fuerza al autofocus nativo del hardware a disparar
+    // Linterna
     try {
       const caps = _camTrack.getCapabilities?.() || {};
-
-      // Zoom ligero para forzar reenfoque del hardware
-      if (caps.zoom && caps.zoom.max >= 1.5) {
-        await _camTrack.applyConstraints({ advanced: [{ zoom: 1.5 }] }).catch(()=>{});
-        // Volver a 1x después de que el autofocus actúe
-        setTimeout(() => {
-          _camTrack?.applyConstraints({ advanced: [{ zoom: 1 }] }).catch(()=>{});
-        }, 1200);
-      }
-
-      // Linterna
       const torchBtn = document.getElementById('camera-torch-btn');
       const torchPh  = document.getElementById('camera-torch-placeholder');
       if (torchBtn) {
@@ -2429,31 +2417,8 @@ async function openCamera(inputId, wrapId) {
       }
     } catch(e) {}
 
-    // Tap-to-focus: zoom momentáneo en la zona tocada
-    video.addEventListener('click', async (e) => {
-      if (!_camTrack) return;
-
-      const rect = video.getBoundingClientRect();
-
-      // Flash visual
-      const flash = document.createElement('div');
-      flash.style.cssText = `position:absolute;width:56px;height:56px;border:2px solid #009BDB;border-radius:50%;
-        left:${e.clientX - rect.left - 28}px;top:${e.clientY - rect.top - 28}px;
-        pointer-events:none;z-index:5;animation:focusRing .6s ease-out forwards`;
-      video.parentElement.appendChild(flash);
-      setTimeout(() => flash.remove(), 700);
-
-      // Zoom + reset para forzar reenfoque en esa zona
-      try {
-        const caps = _camTrack.getCapabilities?.() || {};
-        if (caps.zoom && caps.zoom.max >= 1.3) {
-          await _camTrack.applyConstraints({ advanced: [{ zoom: 1.8 }] }).catch(()=>{});
-          setTimeout(() => {
-            _camTrack?.applyConstraints({ advanced: [{ zoom: 1 }] }).catch(()=>{});
-          }, 800);
-        }
-      } catch(e) {}
-    });
+    // Monitorear nitidez del frame en tiempo real
+    startSharpnessMonitor(video, statusEl);
 
   } catch(err) {
     modal.style.display = 'none';
@@ -2469,6 +2434,73 @@ async function openCamera(inputId, wrapId) {
   }
 }
 
+/* ── Sharpness monitor ───────────────────────────────────
+   Analiza nitidez del frame en tiempo real usando varianza
+   del gradiente (Laplacian variance). Cuando supera el umbral
+   significa que el autofocus ya actuó y la imagen está nítida.
+   ──────────────────────────────────────────────────────── */
+let _sharpnessRAF = null;
+
+function startSharpnessMonitor(video, statusEl) {
+  const capBtn = document.querySelector('#camera-modal button[onclick="capturePhoto()"]');
+  const canvas = document.createElement('canvas');
+  const SAMPLE = 120; // tamaño de muestra pequeño para no gastar memoria
+  canvas.width  = SAMPLE;
+  canvas.height = SAMPLE;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  let sharpHistory = [];
+  let frameCount   = 0;
+
+  if (capBtn) { capBtn.disabled = true; capBtn.style.opacity = '0.4'; }
+
+  function measure() {
+    if (!_camStream) return;
+    frameCount++;
+
+    // Medir cada 4 frames para no gastar CPU
+    if (frameCount % 4 === 0 && video.readyState >= 2) {
+      ctx.drawImage(video, 0, 0, SAMPLE, SAMPLE);
+      const data = ctx.getImageData(0, 0, SAMPLE, SAMPLE).data;
+
+      // Calcular varianza del gradiente (estimación de Laplacian)
+      let sum = 0, sum2 = 0, n = 0;
+      for (let i = 0; i < data.length - 4 * SAMPLE; i += 4) {
+        const gray     = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+        const grayDown = data[i + 4*SAMPLE] * 0.299 + data[i + 4*SAMPLE + 1] * 0.587 + data[i + 4*SAMPLE + 2] * 0.114;
+        const diff = Math.abs(gray - grayDown);
+        sum  += diff;
+        sum2 += diff * diff;
+        n++;
+      }
+      const mean     = sum / n;
+      const variance = sum2 / n - mean * mean;
+      sharpHistory.push(variance);
+      if (sharpHistory.length > 6) sharpHistory.shift();
+
+      const avgSharp = sharpHistory.reduce((a,b) => a+b, 0) / sharpHistory.length;
+
+      // Umbral: >80 = imagen suficientemente nítida
+      if (avgSharp > 80 && sharpHistory.length >= 4) {
+        // Imagen nítida — habilitar botón
+        if (capBtn) {
+          capBtn.disabled = false;
+          capBtn.style.opacity = '1';
+          capBtn.style.background = 'white';
+        }
+        if (statusEl) statusEl.textContent = '✓ Enfocado — presione para capturar';
+      } else if (avgSharp > 40) {
+        if (statusEl) statusEl.textContent = 'Enfocando...';
+      } else {
+        if (statusEl) statusEl.textContent = 'Acerque más la etiqueta...';
+      }
+    }
+
+    _sharpnessRAF = requestAnimationFrame(measure);
+  }
+
+  _sharpnessRAF = requestAnimationFrame(measure);
+}
+
 let _capturing = false;
 
 function capturePhoto() {
@@ -2477,28 +2509,16 @@ function capturePhoto() {
   if (!video || !_camStream) return;
 
   _capturing = true;
-  const statusEl = document.getElementById('camera-status');
-  const capBtn   = document.querySelector('#camera-modal button[onclick="capturePhoto()"]');
 
-  // Cuenta regresiva 2s — da tiempo al autofocus nativo del celular
-  let count = 2;
-  if (capBtn) { capBtn.style.background = '#009BDB'; capBtn.style.transform = 'scale(.9)'; }
-  if (statusEl) statusEl.textContent = `Enfocando... ${count}`;
+  // Cancelar monitor de nitidez
+  if (_sharpnessRAF) { cancelAnimationFrame(_sharpnessRAF); _sharpnessRAF = null; }
 
-  const timer = setInterval(() => {
-    count--;
-    if (count > 0) {
-      if (statusEl) statusEl.textContent = `Enfocando... ${count}`;
-    } else {
-      clearInterval(timer);
-      _doCapture(video, capBtn, statusEl);
-    }
-  }, 1000);
+  _doCapture(video);
 }
 
-function _doCapture(video, capBtn, statusEl) {
+function _doCapture(video) {
   const MAX_DIM = 1280;
-  const QUALITY = 0.85;
+  const QUALITY = 0.88;
 
   let w = video.videoWidth;
   let h = video.videoHeight;
@@ -2532,7 +2552,6 @@ function _doCapture(video, capBtn, statusEl) {
   if (anBtn) anBtn.style.display = 'flex';
 
   _capturing = false;
-  if (capBtn) { capBtn.style.background = 'white'; capBtn.style.transform = ''; }
   closeCamera();
   showToast('✓ Foto capturada', 'ok-t');
 }
@@ -2567,7 +2586,9 @@ async function toggleTorch() {
 }
 
 function closeCamera() {
-  _camTorch = false;
+  _camTorch    = false;
+  _capturing   = false;
+  if (_sharpnessRAF) { cancelAnimationFrame(_sharpnessRAF); _sharpnessRAF = null; }
   if (_camTrack) {
     try { _camTrack.applyConstraints({ advanced: [{ torch: false }] }).catch(()=>{}); } catch(e) {}
   }
