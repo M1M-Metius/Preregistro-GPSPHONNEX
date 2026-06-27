@@ -745,7 +745,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.8</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.9</span></div>
   </div>
 </div>
 
@@ -770,7 +770,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.8</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.9</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +805,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.8</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.9</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -838,7 +838,7 @@ tr:hover td{background:var(--gray-50)}
           <div class="card-body" style="padding:0">
             <table>
               <thead><tr>
-                <th>Código</th><th>Placa</th><th>Camión</th><th>Estado</th><th>Fecha</th>
+                <th>Código</th><th>Placa</th><th>Camión</th><th>País</th><th>Flota</th><th>Estado</th><th>Fecha</th>
               </tr></thead>
               <tbody id="dash-recent"></tbody>
             </table>
@@ -1263,7 +1263,9 @@ tr:hover td{background:var(--gray-50)}
             <thead><tr>
               <th>Código</th>
               <th>Placa</th>
-              <th>Camión / Flota</th>
+              <th>Camión / Modelo</th>
+              <th>País</th>
+              <th>Flota</th>
               <th>Galileosky IMEI</th>
               <th>Estado</th>
               <th>Fecha</th>
@@ -2028,14 +2030,17 @@ async function refreshDashboard() {
   tbody.innerHTML = '';
   if (!recent.length) { empty.style.display=''; return; }
   empty.style.display = 'none';
+  const pFlag = { CL:'🇨🇱', PE:'🇵🇪', BR:'🇧🇷' };
   recent.forEach(r => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><span class="td-mono">${r.codigo_registro||'—'}</span></td>
+      <td><span class="td-mono" style="font-size:11px">${r.codigo_registro||'—'}</span></td>
       <td><span class="td-plate">${r.placa}</span></td>
-      <td>${r.codigo_camion||''} <span style="color:var(--gray-400)">${r.flota||''}</span></td>
+      <td>${r.marca||''} ${r.modelo||''}<br><span style="color:var(--gray-400);font-size:11px">${r.codigo_camion||''}</span></td>
+      <td style="font-size:12px;white-space:nowrap">${pFlag[r.pais_iso]||'—'} ${r.pais_iso||''}</td>
+      <td style="font-size:12px;color:var(--gray-600)">${r.flota||'—'}</td>
       <td>${statusBadge(r.estado)}</td>
-      <td style="color:var(--gray-400)">${fmtDate(r.created_at)}</td>
+      <td style="color:var(--gray-400);font-size:12px">${fmtDate(r.created_at)}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -2062,19 +2067,23 @@ async function renderTable(filter='') {
   if (!rows.length) { empty.style.display=''; return; }
   empty.style.display = 'none';
 
-  const paisFlag = { CL:'🇨🇱', PE:'🇵🇪', BR:'🇧🇷' };
+  const paisFlag  = { CL:'🇨🇱 Chile', PE:'🇵🇪 Perú', BR:'🇧🇷 Brasil' };
+  const paisNombre = { CL:'Chile', PE:'Perú', BR:'Brasil' };
 
   rows.forEach((r) => {
-    const idx = allRecords.indexOf(r);
-    const bandera = paisFlag[r.pais_iso] || '';
+    const idx    = allRecords.indexOf(r);
+    const pais   = paisFlag[r.pais_iso]   || '—';
+    const flota  = r.flota || '—';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><span class="td-mono" style="font-size:11px">${r.codigo_registro||'—'}</span></td>
       <td><span class="td-plate">${r.placa}</span></td>
       <td>
-        <div style="font-weight:600">${bandera} ${r.marca||''} ${r.modelo||''}</div>
-        <div style="font-size:11px;color:var(--gray-400)">${r.codigo_camion||''} ${r.flota ? '· '+r.flota : ''}</div>
+        <div style="font-weight:600">${r.marca||''} ${r.modelo||''}</div>
+        <div style="font-size:11px;color:var(--gray-400)">${r.codigo_camion||''}</div>
       </td>
+      <td style="font-size:12px;white-space:nowrap">${pais}</td>
+      <td style="font-size:12px;color:var(--gray-600)">${flota}</td>
       <td><span class="td-mono" style="font-size:11px">${r.imei_galileosky||'—'}</span></td>
       <td>${statusBadge(r.estado)}</td>
       <td style="color:var(--gray-400);font-size:12px">${fmtDate(r.created_at)}</td>
@@ -2151,6 +2160,43 @@ function openModal(idx) {
         ${eRow('Camera Center (cm)','adas_camera_center',r.adas_camera_center,'number',idx)}
       </div>
     </div>
+
+    <!-- ── Fotos ── -->
+    ${(() => {
+      const fotos = [
+        { key:'foto_imei_galileosky',   lbl:'IMEI Galileosky' },
+        { key:'foto_chip_galileosky',   lbl:'Chip/SIM Galileosky' },
+        { key:'foto_imei_mdvr',         lbl:'IMEI MDVR' },
+        { key:'foto_chip_mdvr',         lbl:'Chip/SIM MDVR' },
+        { key:'foto_imei_iridium',      lbl:'IMEI Iridium' },
+        { key:'foto_chip_tablet',       lbl:'Chip/SIM Tablet' },
+        { key:'foto_mac_sensor_angulo', lbl:'MAC Sensor DU-BLE' },
+        { key:'foto_vehiculo',          lbl:'Placa / Vehículo' },
+      ];
+      const fotoItems = fotos.map(f => {
+        const ruta = r[f.key];
+        if (!ruta) return `
+          <div style="background:var(--gray-50);border-radius:var(--r8);padding:12px;text-align:center">
+            <div style="font-size:11px;color:var(--gray-400);margin-bottom:4px">${f.lbl}</div>
+            <div style="font-size:12px;color:var(--gray-300)">Sin foto</div>
+          </div>`;
+        const url = '/' + ruta.replace(/^\//, '');
+        return `
+          <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden">
+            <div style="font-size:11px;font-weight:600;color:var(--gray-500);padding:6px 10px 4px">${f.lbl}</div>
+            <a href="${url}" target="_blank" title="Ver foto completa">
+              <img src="${url}" alt="${f.lbl}"
+                style="width:100%;max-height:140px;object-fit:cover;display:block;cursor:zoom-in"
+                onerror="this.parentElement.parentElement.innerHTML='<div style=\\'padding:12px;text-align:center;font-size:12px;color:var(--gray-400)\\'>Foto no disponible</div>'"/>
+            </a>
+          </div>`;
+      }).join('');
+      const conFoto = fotos.filter(f => r[f.key]).length;
+      return `<div class="detail-section">
+        <div class="detail-sec-title">📷 Fotos (${conFoto} de ${fotos.length})</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${fotoItems}</div>
+      </div>`;
+    })()}
 
     <!-- ── Observaciones ── -->
     <div class="detail-section">
@@ -2344,7 +2390,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v5.8
+   SIDEBAR MOBILE — v5.9
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
