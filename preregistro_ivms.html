@@ -745,7 +745,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.3</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.4</span></div>
   </div>
 </div>
 
@@ -770,7 +770,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.3</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.4</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +805,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.3</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.4</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1346,7 +1346,7 @@ tr:hover td{background:var(--gray-50)}
       <button id="camera-torch-btn" onclick="toggleCameraTorch()" style="display:none;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:20px;cursor:pointer">🔦</button>
       <div id="camera-torch-placeholder" style="width:48px"></div>
     </div>
-    <div style="text-align:center;margin-top:10px;color:rgba(255,255,255,.4);font-size:11px">👆 toque la etiqueta en pantalla → espere → capture</div>
+    <div style="text-align:center;margin-top:10px;color:rgba(255,255,255,.4);font-size:11px">encuadre la etiqueta y presione el botón</div>
   </div>
 </div>
 
@@ -2329,7 +2329,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v5.3
+   SIDEBAR MOBILE — v5.4
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -2419,38 +2419,10 @@ async function openCamera(inputId, wrapId) {
       }
     } catch(e) {}
 
-    // Botón deshabilitado hasta que el técnico confirme el enfoque
+    // Botón disponible de inmediato — el autofocus nativo actúa solo
     const capBtn = document.querySelector('#camera-modal button[onclick="capturePhoto()"]');
-    if (capBtn) { capBtn.disabled = true; capBtn.style.opacity = '0.3'; }
-    if (statusEl) statusEl.textContent = '👆 Toque la etiqueta en pantalla para enfocar';
-
-    // Al tocar el video: mostrar anillo + habilitar botón después de 2s
-    const videoEl = document.getElementById('camera-video');
-    videoEl.addEventListener('click', function onTap(e) {
-      const rect = videoEl.getBoundingClientRect();
-
-      // Anillo visual en el punto tocado
-      const ring = document.createElement('div');
-      ring.style.cssText = `
-        position:absolute;
-        width:64px;height:64px;
-        border:3px solid #009BDB;border-radius:50%;
-        left:${e.clientX - rect.left - 32}px;
-        top:${e.clientY - rect.top - 32}px;
-        pointer-events:none;z-index:10;
-        animation:focusRing .7s ease-out forwards`;
-      videoEl.parentElement.appendChild(ring);
-      setTimeout(() => ring.remove(), 750);
-
-      if (statusEl) statusEl.textContent = 'Enfocando... espere 2s';
-      if (capBtn) { capBtn.disabled = true; capBtn.style.opacity = '0.3'; }
-
-      // Habilitar después de 2s (tiempo para que el AF actúe)
-      setTimeout(() => {
-        if (capBtn) { capBtn.disabled = false; capBtn.style.opacity = '1'; }
-        if (statusEl) statusEl.textContent = '✓ Listo — presione el botón blanco';
-      }, 2000);
-    });
+    if (capBtn) { capBtn.disabled = false; capBtn.style.opacity = '1'; }
+    if (statusEl) statusEl.textContent = 'Encuadre la etiqueta y presione el botón';
 
   } catch(err) {
     modal.style.display = 'none';
