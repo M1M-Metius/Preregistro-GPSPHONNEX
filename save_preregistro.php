@@ -36,6 +36,23 @@ if (!empty($_POST['_json'])) {
     $data = $_POST;
 }
 
+// ── DEBUG temporal — quitar después de resolver el bug ────
+if (!empty($_GET['debug'])) {
+    echo json_encode([
+        'debug'          => true,
+        'has_json'       => !empty($_POST['_json']),
+        'post_keys'      => array_keys($_POST),
+        'data_placa'     => $data['placa'] ?? 'AUSENTE',
+        'data_marca'     => $data['marca'] ?? 'AUSENTE',
+        'files'          => array_keys($_FILES),
+        'post_max_size'  => ini_get('post_max_size'),
+        'upload_max'     => ini_get('upload_max_filesize'),
+        'content_length' => $_SERVER['CONTENT_LENGTH'] ?? '?',
+        'json_raw_start' => substr($_POST['_json'] ?? '', 0, 100),
+    ]);
+    exit;
+}
+
 // Validación mínima
 foreach (['placa','marca','modelo'] as $f) {
     if (empty(trim($data[$f] ?? ''))) {
