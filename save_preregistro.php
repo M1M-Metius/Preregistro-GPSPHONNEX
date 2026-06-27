@@ -2,16 +2,35 @@
 /**
  * GPSP — API Guardar Pre-Registro con fotos + email
  * Archivo: save_preregistro.php
- * Versión: V4.0 | 2026-06-22
+ * Versión: V5.7 | 2026-06-27
  */
 require_once __DIR__ . '/config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Methods: POST, OPTIONS, GET');
 header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST')    { http_response_code(405); echo json_encode(['ok'=>false,'error'=>'Método no permitido']); exit; }
+
+// ── DEBUG GET — ver configuración del servidor ────────────
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['debug'])) {
+    echo json_encode([
+        'debug'          => true,
+        'php_version'    => PHP_VERSION,
+        'post_max_size'  => ini_get('post_max_size'),
+        'upload_max'     => ini_get('upload_max_filesize'),
+        'memory_limit'   => ini_get('memory_limit'),
+        'server_time'    => date('Y-m-d H:i:s'),
+        'method'         => $_SERVER['REQUEST_METHOD'],
+    ], JSON_PRETTY_PRINT);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['ok'=>false,'error'=>'Método no permitido']);
+    exit;
+}
 
 // ── Helpers ───────────────────────────────────────────────
 function s(?string $v, int $max=255): ?string {
