@@ -27,8 +27,14 @@ function si(?string $v): ?int {
     $i = filter_var($v, FILTER_VALIDATE_INT); return $i===false ? null : $i;
 }
 
-// FormData (multipart) — datos en $_POST
-$data = $_POST;
+// FormData (multipart) — datos de texto en campo _json, fotos en $_FILES
+// Se usa _json para evitar que post_max_size vacíe $_POST cuando hay blobs grandes
+if (!empty($_POST['_json'])) {
+    $data = json_decode($_POST['_json'], true) ?? [];
+} else {
+    // Fallback: leer $_POST directo (compatibilidad)
+    $data = $_POST;
+}
 
 // Validación mínima
 foreach (['placa','marca','modelo'] as $f) {

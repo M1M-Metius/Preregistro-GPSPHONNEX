@@ -745,7 +745,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.6</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.7</span></div>
   </div>
 </div>
 
@@ -770,7 +770,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.6</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.7</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +805,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.6</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.7</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1598,12 +1598,11 @@ async function submitForm() {
       saveRecords();
       onSuccess(codigo);
     } else {
-      // FormData para soportar fotos
+      // Enviar datos de texto como JSON en un campo, fotos como archivos separados
+      // Esto evita el problema de post_max_size que vacía $_POST cuando hay blobs grandes
       const fd = new FormData();
-      // Siempre incluir todos los campos — el PHP valida los requeridos
-      Object.entries(payload).forEach(([k,v]) => {
-        fd.append(k, v !== null && v !== undefined ? String(v) : '');
-      });
+      fd.append('_json', JSON.stringify(payload));  // todos los campos de texto en un JSON
+
       // Adjuntar fotos comprimidas — 8 individuales
       ['foto_imei_galileosky','foto_chip_galileosky',
        'foto_imei_mdvr','foto_chip_mdvr',
@@ -1612,7 +1611,6 @@ async function submitForm() {
         const input = document.getElementById(id);
         if (!input) return;
         if (input._compressed) {
-          // Send compressed base64 as blob
           const blob = dataURLtoBlob(input._compressed);
           fd.append(id, blob, id + '.jpg');
         } else if (input.files?.[0]) {
@@ -2346,7 +2344,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v5.6
+   SIDEBAR MOBILE — v5.7
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
