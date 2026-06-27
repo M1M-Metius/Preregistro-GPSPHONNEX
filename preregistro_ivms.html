@@ -745,7 +745,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.5</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.6</span></div>
   </div>
 </div>
 
@@ -770,7 +770,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.5</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.6</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +805,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.5</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.6</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1600,7 +1600,10 @@ async function submitForm() {
     } else {
       // FormData para soportar fotos
       const fd = new FormData();
-      Object.entries(payload).forEach(([k,v]) => { if(v !== null && v !== undefined && v !== '') fd.append(k, v); });
+      // Siempre incluir todos los campos — el PHP valida los requeridos
+      Object.entries(payload).forEach(([k,v]) => {
+        fd.append(k, v !== null && v !== undefined ? String(v) : '');
+      });
       // Adjuntar fotos comprimidas — 8 individuales
       ['foto_imei_galileosky','foto_chip_galileosky',
        'foto_imei_mdvr','foto_chip_mdvr',
@@ -1623,7 +1626,13 @@ async function submitForm() {
       });
       const data = await res.json();
       if (data.ok) { onSuccess(data.codigo_registro); }
-      else { showToast(data.error || 'Error al guardar', 'err-t'); }
+      else {
+        showToast(data.error || 'Error al guardar', 'err-t');
+        // Si el error es de campo requerido, ir al paso 1
+        if (data.error?.includes('placa') || data.error?.includes('marca') || data.error?.includes('modelo')) {
+          goStep(1);
+        }
+      }
     }
   } catch(e) {
     showToast('Error de conexión', 'err-t');
@@ -2337,7 +2346,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v5.5
+   SIDEBAR MOBILE — v5.6
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
