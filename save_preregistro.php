@@ -32,6 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Intentar aumentar límites en runtime
+@ini_set('upload_max_filesize', '30M');
+@ini_set('post_max_size', '50M');
+@ini_set('memory_limit', '256M');
+
 // ── Helpers ───────────────────────────────────────────────
 function s(?string $v, int $max=255): ?string {
     if ($v===null || trim($v)==='') return null;

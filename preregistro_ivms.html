@@ -745,7 +745,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.7</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.8</span></div>
   </div>
 </div>
 
@@ -770,7 +770,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.7</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.8</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +805,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.7</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.8</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -2344,7 +2344,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v5.7
+   SIDEBAR MOBILE — v5.8
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -2465,10 +2465,17 @@ function capturePhoto() {
 }
 
 function _doCapture(video) {
-  // Capturar en resolución completa del sensor — sin redimensionar
-  const w = video.videoWidth;
-  const h = video.videoHeight;
-  const QUALITY = 0.92; // calidad alta para legibilidad del IMEI
+  // Capturar con límite de 1600px y calidad 0.75 para respetar upload_max_filesize=2M
+  const MAX_DIM = 1600;
+  const QUALITY = 0.75;
+
+  let w = video.videoWidth;
+  let h = video.videoHeight;
+  if (w > MAX_DIM || h > MAX_DIM) {
+    const ratio = Math.min(MAX_DIM/w, MAX_DIM/h);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+  }
 
   const canvas = document.createElement('canvas');
   canvas.width  = w;
