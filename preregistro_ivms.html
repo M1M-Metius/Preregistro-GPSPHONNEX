@@ -224,6 +224,8 @@ body{font-family:var(--font);font-size:14px;color:var(--gray-900);background:#EE
 /* ── MOBILE RESPONSIVE ───────────────── */
 @media(max-width:700px){
   .btn-hamburger{display:flex !important}
+  .hide-mobile{display:none !important}
+  tbody tr{cursor:pointer}
 
   /* Hide username on mobile */
   .hd-user{display:none}
@@ -745,7 +747,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v5.9</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.0</span></div>
   </div>
 </div>
 
@@ -770,7 +772,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v5.9</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.0</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -805,7 +807,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v5.9</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.0</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1263,12 +1265,12 @@ tr:hover td{background:var(--gray-50)}
             <thead><tr>
               <th>Código</th>
               <th>Placa</th>
-              <th>Camión / Modelo</th>
-              <th>País</th>
-              <th>Flota</th>
-              <th>Galileosky IMEI</th>
+              <th class="hide-mobile">Camión / Modelo</th>
+              <th class="hide-mobile">País</th>
+              <th class="hide-mobile">Flota</th>
+              <th class="hide-mobile">Galileosky IMEI</th>
               <th>Estado</th>
-              <th>Fecha</th>
+              <th class="hide-mobile">Fecha</th>
               <th></th>
             </tr></thead>
             <tbody id="admin-tbody"></tbody>
@@ -2067,28 +2069,29 @@ async function renderTable(filter='') {
   if (!rows.length) { empty.style.display=''; return; }
   empty.style.display = 'none';
 
-  const paisFlag  = { CL:'🇨🇱 Chile', PE:'🇵🇪 Perú', BR:'🇧🇷 Brasil' };
-  const paisNombre = { CL:'Chile', PE:'Perú', BR:'Brasil' };
+    const pFlag   = { CL:'🇨🇱', PE:'🇵🇪', BR:'🇧🇷' };
 
   rows.forEach((r) => {
     const idx    = allRecords.indexOf(r);
-    const pais   = paisFlag[r.pais_iso]   || '—';
+    const pais   = pFlag[r.pais_iso] ? `${pFlag[r.pais_iso]} ${r.pais_iso}` : '—';
     const flota  = r.flota || '—';
     const tr = document.createElement('tr');
+    tr.style.cursor = 'pointer';
+    tr.onclick = () => openModal(idx);
     tr.innerHTML = `
-      <td><span class="td-mono" style="font-size:11px">${r.codigo_registro||'—'}</span></td>
+      <td><span class="td-mono" style="font-size:10px">${r.codigo_registro||'—'}</span></td>
       <td><span class="td-plate">${r.placa}</span></td>
-      <td>
+      <td class="hide-mobile">
         <div style="font-weight:600">${r.marca||''} ${r.modelo||''}</div>
         <div style="font-size:11px;color:var(--gray-400)">${r.codigo_camion||''}</div>
       </td>
-      <td style="font-size:12px;white-space:nowrap">${pais}</td>
-      <td style="font-size:12px;color:var(--gray-600)">${flota}</td>
-      <td><span class="td-mono" style="font-size:11px">${r.imei_galileosky||'—'}</span></td>
+      <td class="hide-mobile" style="font-size:12px;white-space:nowrap">${pais}</td>
+      <td class="hide-mobile" style="font-size:12px;color:var(--gray-600)">${flota}</td>
+      <td class="hide-mobile"><span class="td-mono" style="font-size:11px">${r.imei_galileosky||'—'}</span></td>
       <td>${statusBadge(r.estado)}</td>
-      <td style="color:var(--gray-400);font-size:12px">${fmtDate(r.created_at)}</td>
-      <td>
-        <button class="btn btn-sm btn-ghost" onclick="openModal(${idx})">Ver / Editar</button>
+      <td class="hide-mobile" style="color:var(--gray-400);font-size:12px">${fmtDate(r.created_at)}</td>
+      <td class="hide-mobile">
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openModal(${idx})">Ver / Editar</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -2173,21 +2176,28 @@ function openModal(idx) {
         { key:'foto_mac_sensor_angulo', lbl:'MAC Sensor DU-BLE' },
         { key:'foto_vehiculo',          lbl:'Placa / Vehículo' },
       ];
+      // Construir URL correcta — la ruta en BD es relativa a /preregistro/
+      // Ej: "uploads/fotos_ivms/PREG-xxx/foto.jpg" → "/preregistro/uploads/fotos_ivms/..."
+      function fotoUrl(ruta) {
+        if (!ruta) return null;
+        // Si ya empieza con http o / usar tal cual
+        if (ruta.startsWith('http') || ruta.startsWith('/preregistro')) return ruta;
+        return '/preregistro/' + ruta.replace(/^\//, '');
+      }
       const fotoItems = fotos.map(f => {
-        const ruta = r[f.key];
-        if (!ruta) return `
-          <div style="background:var(--gray-50);border-radius:var(--r8);padding:12px;text-align:center">
-            <div style="font-size:11px;color:var(--gray-400);margin-bottom:4px">${f.lbl}</div>
-            <div style="font-size:12px;color:var(--gray-300)">Sin foto</div>
+        const url = fotoUrl(r[f.key]);
+        if (!url) return `
+          <div style="background:var(--gray-50);border-radius:var(--r8);padding:10px;text-align:center">
+            <div style="font-size:11px;font-weight:600;color:var(--blue-dk);margin-bottom:6px">${f.lbl}</div>
+            <div style="font-size:11px;color:var(--gray-300)">Sin foto</div>
           </div>`;
-        const url = '/' + ruta.replace(/^\//, '');
         return `
-          <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden">
-            <div style="font-size:11px;font-weight:600;color:var(--gray-500);padding:6px 10px 4px">${f.lbl}</div>
-            <a href="${url}" target="_blank" title="Ver foto completa">
+          <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden;border:1px solid var(--gray-200)">
+            <div style="font-size:11px;font-weight:600;color:var(--blue-dk);padding:6px 8px;background:var(--blue-pale)">${f.lbl}</div>
+            <a href="${url}" target="_blank" title="Ver foto completa →">
               <img src="${url}" alt="${f.lbl}"
-                style="width:100%;max-height:140px;object-fit:cover;display:block;cursor:zoom-in"
-                onerror="this.parentElement.parentElement.innerHTML='<div style=\\'padding:12px;text-align:center;font-size:12px;color:var(--gray-400)\\'>Foto no disponible</div>'"/>
+                style="width:100%;height:120px;object-fit:cover;display:block;cursor:zoom-in"
+                onerror="this.parentElement.innerHTML='<div style=\\'padding:20px;text-align:center;font-size:11px;color:var(--gray-400)\\'>Foto no disponible</div>'"/>
             </a>
           </div>`;
       }).join('');
@@ -2390,7 +2400,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v5.9
+   SIDEBAR MOBILE — v6.0
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
