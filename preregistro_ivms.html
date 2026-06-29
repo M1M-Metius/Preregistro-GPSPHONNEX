@@ -749,7 +749,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.2</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.3</span></div>
   </div>
 </div>
 
@@ -774,7 +774,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.2</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.3</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -809,7 +809,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.2</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.3</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -2163,12 +2163,34 @@ function openModal(idx) {
     <!-- ── ADAS ── -->
     <div class="detail-section">
       <div class="detail-sec-title">🎯 Calibración ADAS — Howen</div>
-      <div class="detail-grid">
-        ${eRow('Camera Height (cm)','adas_altura_camara',r.adas_altura_camara,'number',idx)}
-        ${eRow('Car Width (cm)','adas_ancho_vehiculo',r.adas_ancho_vehiculo,'number',idx)}
-        ${eRow('Camera2Bumper (cm)','adas_camara_parachoque',r.adas_camara_parachoque,'number',idx)}
-        ${eRow('Camera2Axle (cm)','adas_camara_eje',r.adas_camara_eje,'number',idx)}
-        ${eRow('Camera Center (cm)','adas_camera_center',r.adas_camera_center,'number',idx)}
+
+      <!-- Fig.4 + Fig.5 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden;border:1px solid var(--gray-200)">
+          <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;padding:5px 8px;background:var(--blue-pale)">Fig.4 — Car Width</div>
+          <img src="/preregistro/Fig.4.jpg" alt="Fig.4" onerror="this.style.display='none'" style="width:100%;max-height:100px;object-fit:cover;display:block"/>
+          ${eRow('Car Width (cm)','adas_ancho_vehiculo',r.adas_ancho_vehiculo,'number',idx)}
+        </div>
+        <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden;border:1px solid var(--gray-200)">
+          <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;padding:5px 8px;background:var(--blue-pale)">Fig.5 — Height &amp; Bumper</div>
+          <img src="/preregistro/Fig.5.jpg" alt="Fig.5" onerror="this.style.display='none'" style="width:100%;max-height:100px;object-fit:cover;display:block"/>
+          ${eRow('Camera Height (cm)','adas_altura_camara',r.adas_altura_camara,'number',idx)}
+          ${eRow('Camera2Bumper (cm)','adas_camara_parachoque',r.adas_camara_parachoque,'number',idx)}
+        </div>
+      </div>
+
+      <!-- Fig.6 + Fig.3 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px">
+        <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden;border:1px solid var(--gray-200)">
+          <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;padding:5px 8px;background:var(--blue-pale)">Fig.6 — Camera2Axle</div>
+          <img src="/preregistro/Fig.6.jpg" alt="Fig.6" onerror="this.style.display='none'" style="width:100%;max-height:100px;object-fit:cover;display:block"/>
+          ${eRow('Camera2Axle (cm)','adas_camara_eje',r.adas_camara_eje,'number',idx)}
+        </div>
+        <div style="background:var(--gray-50);border-radius:var(--r8);overflow:hidden;border:1px solid var(--gray-200)">
+          <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;padding:5px 8px;background:var(--blue-pale)">Fig.3 — Camera Center</div>
+          <img src="/preregistro/Fig.3.jpg" alt="Fig.3" onerror="this.style.display='none'" style="width:100%;max-height:100px;object-fit:cover;display:block"/>
+          ${eRow('Camera Center (cm)','adas_camera_center',r.adas_camera_center,'number',idx)}
+        </div>
       </div>
     </div>
 
@@ -2408,7 +2430,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v6.2
+   SIDEBAR MOBILE — v6.3
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
