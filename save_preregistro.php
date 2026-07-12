@@ -102,7 +102,7 @@ $codigo = 'PREG-' . date('Ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(3
 // ── Guardar fotos ─────────────────────────────────────────
 // Carpeta: uploads/fotos_ivms/PREG-YYYYMMDD-XXXXXX/
 $fotoPaths = [];
-$fotoFields = ['foto_imei_galileosky','foto_chip_galileosky','foto_imei_mdvr','foto_chip_mdvr','foto_imei_iridium','foto_chip_tablet','foto_mac_sensor_angulo','foto_vehiculo'];
+$fotoFields = ['foto_imei_galileosky','foto_chip_galileosky','foto_imei_mdvr','foto_chip_mdvr','foto_imei_iridium','foto_chip_tablet','foto_imei_tablet','foto_mac_sensor_angulo','foto_vehiculo'];
 $uploadDir  = __DIR__ . '/uploads/fotos_ivms/' . $codigo . '/';
 
 if (!empty(array_filter($fotoFields, fn($f) => !empty($_FILES[$f]['tmp_name'])))) {
@@ -135,7 +135,7 @@ $sql = "INSERT INTO preregistro_ivms (
     adas_altura_camara, adas_ancho_vehiculo,
     adas_camara_parachoque, adas_camara_eje, adas_camera_center,
     foto_imei_galileosky, foto_chip_galileosky, foto_imei_mdvr, foto_chip_mdvr,
-    foto_imei_iridium, foto_chip_tablet, foto_mac_sensor_angulo, foto_vehiculo,
+    foto_imei_iridium, foto_chip_tablet, foto_imei_tablet, foto_mac_sensor_angulo, foto_vehiculo,
     registrado_por, ip_origen, observaciones, estado
 ) VALUES (
     :codigo_registro, :placa, :codigo_camion, :marca, :modelo, :anio, :flota, :pais_iso,
@@ -144,7 +144,7 @@ $sql = "INSERT INTO preregistro_ivms (
     :adas_altura_camara, :adas_ancho_vehiculo,
     :adas_camara_parachoque, :adas_camara_eje, :adas_camera_center,
     :foto_imei_galileosky, :foto_chip_galileosky, :foto_imei_mdvr, :foto_chip_mdvr,
-    :foto_imei_iridium, :foto_chip_tablet, :foto_mac_sensor_angulo, :foto_vehiculo,
+    :foto_imei_iridium, :foto_chip_tablet, :foto_imei_tablet, :foto_mac_sensor_angulo, :foto_vehiculo,
     :registrado_por, :ip_origen, :observaciones, 'pendiente'
 )";
 
@@ -175,6 +175,7 @@ $pdo->prepare($sql)->execute([
     ':foto_chip_mdvr'          => $fotoPaths['foto_chip_mdvr'],
     ':foto_imei_iridium'       => $fotoPaths['foto_imei_iridium'],
     ':foto_chip_tablet'        => $fotoPaths['foto_chip_tablet'],
+    ':foto_imei_tablet'        => $fotoPaths['foto_imei_tablet'],
     ':foto_mac_sensor_angulo'  => $fotoPaths['foto_mac_sensor_angulo'],
     ':foto_vehiculo'           => $fotoPaths['foto_vehiculo'],
     ':registrado_por'          => s($data['registrado_por']??null, 120),
