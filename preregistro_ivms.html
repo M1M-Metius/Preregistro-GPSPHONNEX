@@ -749,7 +749,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.3</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.4</span></div>
   </div>
 </div>
 
@@ -774,7 +774,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.3</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.4</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -809,7 +809,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.3</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.4</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -1102,9 +1102,29 @@ tr:hover td{background:var(--gray-50)}
                 </button>
               </div>
             </div>
+            <!-- Fila adicional: IMEI Tablet -->
+            <div class="g2" style="margin-top:10px">
+              <div class="field">
+                <label class="lbl">📷 Foto IMEI Tablet MDT <span class="hint">(opcional)</span></label>
+                <div class="photo-wrap" id="pw-imei_tablet" data-input="foto_imei_tablet" data-wrap="pw-imei_tablet" onclick="openCamera(this.dataset.input,this.dataset.wrap)">
+                  <input type="file" id="foto_imei_tablet" accept="image/*" style="display:none" onchange="previewPhoto(this,'pw-imei_tablet')"/>
+                  <div class="photo-placeholder" id="ph-imei_tablet"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Tomar foto</span></div>
+                  <img id="prev-imei_tablet" class="photo-preview" style="display:none"/>
+                  <button type="button" class="photo-clear" id="clr-imei_tablet" style="display:none" onclick="clearPhoto(event,'foto_imei_tablet','pw-imei_tablet','ph-imei_tablet','prev-imei_tablet','clr-imei_tablet')">✕</button>
+                </div>
+                <button type="button" class="btn-analyze btn-analyze-sm" id="btn-analyze-imei_tablet" style="display:none" onclick="analizarFoto('mdvr','imei_tablet')">
+                  🔍 <span class="analyze-lbl">Extraer IMEI</span><span class="analyze-spin" style="display:none">⏳</span>
+                </button>
+              </div>
+              <div></div>
+            </div>
             <div class="g2" style="margin-top:12px">
               <div class="field"><label class="lbl" for="imei_iridium">IMEI Iridium</label><input type="text" id="imei_iridium" placeholder="300000000000000" maxlength="20" class="mono" inputmode="numeric"/></div>
               <div class="field"><label class="lbl" for="chip_tablet">Chip / SIM Tablet MDT <span class="hint">(opcional)</span></label><input type="text" id="chip_tablet" placeholder="Número SIM o ICCID" maxlength="30" class="mono"/></div>
+            </div>
+            <div class="g2" style="margin-top:8px">
+              <div class="field"><label class="lbl" for="imei_tablet">IMEI Tablet MDT <span class="hint">(opcional)</span></label><input type="text" id="imei_tablet" placeholder="000000000000000" maxlength="20" class="mono" inputmode="numeric"/></div>
+              <div></div>
             </div>
 
             <div class="div"></div>
@@ -1562,6 +1582,7 @@ function collectData() {
     chip_mdvr:           gv('chip_mdvr'),
     imei_iridium:        gv('imei_iridium'),
     chip_tablet:         gv('chip_tablet'),
+    imei_tablet:         gv('imei_tablet'),
     mac_sensor_angulo:   gv('mac_sensor_angulo'),
     adas_altura_camara:      gv('adas_altura_camara'),
     adas_ancho_vehiculo:     gv('adas_ancho_vehiculo'),
@@ -1612,7 +1633,7 @@ async function submitForm() {
       // Adjuntar fotos comprimidas — 8 individuales
       ['foto_imei_galileosky','foto_chip_galileosky',
        'foto_imei_mdvr','foto_chip_mdvr',
-       'foto_imei_iridium','foto_chip_tablet',
+       'foto_imei_iridium','foto_chip_tablet','foto_imei_tablet',
        'foto_mac_sensor_angulo','foto_foto_vehiculo_pic'].forEach(id => {
         const input = document.getElementById(id);
         if (!input) return;
@@ -1742,7 +1763,7 @@ function resetForm() {
   // Reset 8 fotos individuales
   ['imei_galileosky','chip_galileosky',
    'imei_mdvr','chip_mdvr',
-   'imei_iridium','chip_tablet',
+   'imei_iridium','chip_tablet','imei_tablet',
    'mac_sensor_angulo','foto_vehiculo_pic'].forEach(k => {
     const inp  = document.getElementById('foto_' + k);
     const prev = document.getElementById('prev-' + k);
@@ -1881,6 +1902,7 @@ const ANALYZE_FIELDS = {
   chip_mdvr:        { iccid: 'chip_mdvr' },
   imei_iridium:     { imei: 'imei_iridium' },
   chip_tablet:      { iccid: 'chip_tablet' },
+  imei_tablet:      { imei: 'imei_tablet' },
   mac_sensor_angulo:{ mac: 'mac_sensor_angulo' },
   foto_vehiculo_pic:{ placa: 'placa', marca: 'marca', modelo: 'modelo' },
 };
@@ -1893,6 +1915,7 @@ const ANALYZE_TIPO = {
   chip_mdvr:        'chip_sim',
   imei_iridium:     'iridium',
   chip_tablet:      'chip_sim',
+  imei_tablet:      'mdvr',
   mac_sensor_angulo:'sensor',
   foto_vehiculo_pic:'vehiculo',
 };
@@ -2430,7 +2453,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v6.3
+   SIDEBAR MOBILE — v6.4
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
