@@ -749,7 +749,7 @@ tr:hover td{background:var(--gray-50)}
         <span>Ingresar</span>
       </button>
     </div>
-    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.4</span></div>
+    <div class="login-footer">Sistema IVMS — Varinfe Corp © 2026 &nbsp;·&nbsp; <span style="color:var(--blue);font-weight:600">v6.5</span></div>
   </div>
 </div>
 
@@ -774,7 +774,7 @@ tr:hover td{background:var(--gray-50)}
     </a>
     <div class="hd-right">
       <div class="hd-user">Bienvenido, <span id="hd-username">—</span></div>
-      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.4</span>
+      <span style="color:var(--gray-400);font-size:10px;font-weight:600;letter-spacing:.5px;display:none" class="hd-ver">v6.5</span>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </header>
@@ -809,7 +809,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="view active" id="view-dashboard">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="page-title">Dashboard</div>
-          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.4</span>
+          <span style="background:var(--blue-pale);color:var(--blue-dk);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px">v6.5</span>
         </div>
         <div class="page-sub">Resumen del sistema de pre-registro IVMS</div>
 
@@ -2179,6 +2179,7 @@ function openModal(idx) {
         ${eRow('Chip SIM MDVR','chip_mdvr',r.chip_mdvr,'text',idx,false,true)}
         ${eRow('IMEI Iridium','imei_iridium',r.imei_iridium,'text',idx,false,true)}
         ${eRow('Chip SIM Tablet MDT','chip_tablet',r.chip_tablet,'text',idx,false,true)}
+        ${eRow('IMEI Tablet MDT','imei_tablet',r.imei_tablet,'text',idx,false,true)}
         ${eRow('MAC Sensor DU-BLE','mac_sensor_angulo',r.mac_sensor_angulo,'text',idx,false,true)}
       </div>
     </div>
@@ -2226,6 +2227,7 @@ function openModal(idx) {
         { key:'foto_chip_mdvr',         lbl:'Chip/SIM MDVR' },
         { key:'foto_imei_iridium',      lbl:'IMEI Iridium' },
         { key:'foto_chip_tablet',       lbl:'Chip/SIM Tablet' },
+        { key:'foto_imei_tablet',       lbl:'IMEI Tablet MDT' },
         { key:'foto_mac_sensor_angulo', lbl:'MAC Sensor DU-BLE' },
         { key:'foto_vehiculo',          lbl:'Placa / Vehículo' },
       ];
@@ -2316,7 +2318,7 @@ async function saveEdit(idx) {
   const r = allRecords[idx];
   const fields = ['placa','codigo_camion','marca','modelo','anio','flota',
     'imei_galileosky','chip_galileosky','imei_mdvr','chip_mdvr',
-    'imei_iridium','chip_tablet','mac_sensor_angulo',
+    'imei_iridium','chip_tablet','imei_tablet','mac_sensor_angulo',
     'adas_altura_camara','adas_ancho_vehiculo','adas_camara_parachoque',
     'adas_camara_eje','adas_camera_center'];
 
@@ -2453,7 +2455,7 @@ document.getElementById('mac_sensor_angulo').addEventListener('input', function(
 });
 
 /* ══════════════════════════════════════
-   SIDEBAR MOBILE — v6.4
+   SIDEBAR MOBILE — v6.5
    ══════════════════════════════════════ */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
